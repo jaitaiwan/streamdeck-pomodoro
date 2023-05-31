@@ -232,7 +232,7 @@ function getKeyPressDuration(context: string) {
     return 0;
   }
   
-  return ((new Date()) - lastKeyDown)/ 1;
+  return ((new Date()).getUTCMilliseconds() - lastKeyDown.getUTCMilliseconds())/ 1;
 }
 
 export default plugin;

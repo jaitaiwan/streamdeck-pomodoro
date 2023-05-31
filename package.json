@@ -1,9 +1,9 @@
 {
   "name": "streamdeck-pomodoro",
-  "version": "0.0.0-development",
+  "version": "0.0.1",
   "description": "Set a pomodoro timer and be visually notified when the time expires.",
   "private": true,
-  "author": "Pascal Jordin",
+  "author": "Pascal Jordin, Daniel Holmes",
   "scripts": {
     "build": "npm run clean && cross-env NODE_ENV=development webpack --mode=development",
     "build-prod": "npm run clean && cross-env NODE_ENV=production webpack --mode=production",
