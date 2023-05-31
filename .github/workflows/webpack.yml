@@ -25,4 +25,15 @@ jobs:
     - name: Build
       run: |
         npm install
-        npx webpack
+        npm run dist
+
+    - name: Publish Release
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Release Build"
+        files: |
+          LICENSE.txt
+          dist/com.jordin.pomodoro.sdPlugin
