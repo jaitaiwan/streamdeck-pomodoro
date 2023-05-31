@@ -7,6 +7,7 @@ export type PomodoroTimer = {
   diff: number;
   minutes: number;
   seconds: number;
+  lastKeyDown?: Date;
 };
 
 export type Phase = 'timer' | 'shortBreak' | 'longBreak';
