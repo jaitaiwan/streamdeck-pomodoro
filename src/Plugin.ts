@@ -9,6 +9,7 @@ import { isDev } from './helper/Env';
 const plugin = new Streamdeck().plugin();
 const settings: Record<string, Settings> = {};
 const pomodoroTimer: Record<string, PomodoroTimer> = {};
+const PRESS_DURATION = 1.2;
 
 plugin.on('willAppear', ({ context }) => {
   console.log(`Plugin appeears`, context);
@@ -25,8 +26,21 @@ plugin.on('didReceiveSettings', ({ context, settings: updatedSettings }) => {
 });
 
 plugin.on('keyDown', ({ context }) => {
-  console.log(`Plugin key pressed`, context);
+  console.log(`Plugin key down`, context);
+  setKeyDownTime(context)
+});
+
+plugin.on('keyUp', ({ context }) => {
+  console.log(`Plugin key up`, context);
   const { isRunning: isRunnging, intervalId } = pomodoroTimer[context];
+  const keyPressDuration = getKeyPressDuration(context)
+  
+  if (keyPressDuration > PRESS_DURATION) {
+    stopTimer(context);
+    setNextPhase(context);
+    return
+  }
+  
   updateStartTime(context);
 
   if (isRunnging && intervalId) {
@@ -89,7 +103,6 @@ function timer(context: string) {
     console.log('Time expired!');
     stopTimer(context);
     setNextPhase(context);
-    startTimer(context);
     // TODO: Maybe choose in settings if pause or next phase?
     return;
   }
@@ -207,6 +220,19 @@ function updateRunningStatus(runningStatus: boolean, context: string) {
 }
 function updateCycle(cycle: number, context: string) {
   pomodoroTimer[context] = { ...pomodoroTimer[context], cycle };
+}
+function setKeyDownTime(context: string) {
+  pomodoroTimer[context] = { ...pomodoroTimer[context], lastKeyDown: new Date() }
+}
+
+// Returns the duration between last key-press in 1 second intervals
+function getKeyPressDuration(context: string) {
+  const { lastKeyDown } = pomodoroTimer[context];
+  if (lastKeyDown === undefined) {
+    return 0;
+  }
+  
+  return ((new Date()) - lastKeyDown)/ 1;
 }
 
 export default plugin;
