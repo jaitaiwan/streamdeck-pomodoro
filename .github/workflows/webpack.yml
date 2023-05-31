@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [macos-latest, windows-latest]
 
     strategy:
       matrix:
@@ -25,7 +25,15 @@ jobs:
     - name: Build
       run: |
         npm install
-        npm run dist
+        npm run build-prod
+
+    - name: StreamDeck Distribution Tool
+      uses: AdamCarballo/streamdeck-distribution-tool@v1
+      with:
+        input: dist/com.jordin.pomodoro.sdPlugin
+        output: dist
+
+    
 
     - name: Publish Release
       uses: "marvinpinto/action-automatic-releases@latest"
